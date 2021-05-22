@@ -1,8 +1,6 @@
 /*
 Marinus Klaassen 2012
 
-Version 0.4 of the LemurClient Class.
-
 Simple Lemur interface building with SuperCollider.
 
 Color option. Lemur manual page 129 gives the formular to
@@ -11,54 +9,61 @@ to a color range of 0 8355711. Color argument is set with
 a Color object.
 
 Font sizes are clipped between 8 and 24
-
-- add knop
-
-- With pads toggle and sequencers can be build. check editor!
 */
 
-
 LemurClient {
-	classvar connections, buildPort = 8002, oscPort = 8000;
-	var <current_ip, <buildInfo, <oscaddr, <>standardColor;
+	classvar connections, buildPort = 8002, oscPort = 8000, <>defaultColor, <buildInfo;
+	var <remoteClientIP, <lemurClientNetAddr;
 
 	*initClass {
-		connections = IdentityDictionary.new;
+		connections = IdentityDictionary();
+		buildInfo = IdentityDictionary();
+		defaultColor=Color.grey;
 	}
 
 	*new { ^super.new; }
 
-	connect { |ip = "192.10.1.2"|
-		if (connections[ip] == nil, {
-			connections[ip] = [
-				NetAddr(ip,buildPort).connect,
-				NetAddr(ip,oscPort)
+	connect { |remoteIP = nil|
+
+		if (remoteIP == nil, {
+			remoteIP = LemurClientConfig.defaultLemurClientRemoteIP;
+		});
+
+		if (remoteIP == nil, {
+			postln("Warning! No remoteIP method argument is provided or LemurClientConfig.defaultLemurClientRemoteIP configured!");
+			^this;
+	    });
+
+		// Multiple LemurClient instances can use the same client endpoint. Create a new connection if needed.
+		if (connections[remoteIP] == nil, {
+			postln("Connecting LemurClient to remote IP " + remoteIP);
+			connections[remoteIP] = [
+				NetAddr(remoteIP, buildPort).connect(),
+				NetAddr(remoteIP, oscPort)
 			];
 		});
 
-		oscaddr = connections[ip].last;
-		current_ip = ip; // current ip is stored in an instance variable to
-		current_ip.postln;
-		connections.postln;
-		buildInfo = IdentityDictionary.new;
-		standardColor = Color.blue;
+		lemurClientNetAddr = connections[remoteIP].last;
+		postln("Connection succeeded. The current socket connections are:");
+		postln(connections);
+		^this;
 	}
 
 	disconnect {
-		connections[current_ip] do: (_.disconnect);
-		connections[current_ip] = nil;
+		connections[remoteClientIP] do: (_.disconnect);
+		connections[remoteClientIP] = nil;
 	}
 
 	sendPacket { |message|
-		if (connections[current_ip].notNil, {
-			connections[current_ip][0].sendMsg("/jzml",message.ascii.add(0).as(Int8Array));
+		if (connections[remoteClientIP].notNil, {
+			connections[remoteClientIP][0].sendMsg("/jzml",message.ascii.add(0).as(Int8Array));
 			},{
 				"evaluate method .connect".postln;
 		});
 	}
 
 	setColor { |colorClass|
-		if (colorClass.isNil) { colorClass = standardColor };
+		if (colorClass.isNil) { colorClass = defaultColor };
 		colorClass = colorClass.asArray.copyRange(0,2).round(0.01).clip(0,1.0);
 		colorClass = this.convertColor(*colorClass);
 		^colorClass
@@ -76,7 +81,6 @@ LemurClient {
 		var string = '<RESET/><OSC request="1"/><SYNCHRO mode="0"/><PROJECT title="more beer" version="3030" width="1024" height="724" osc_target="-2" midi_target="-2" kbmouse_target="-2"/>'.asString;
 		this.sendPacket(string);
 	}
-
 
 	// Code snippets to add and remove a page.
 	addPageCode { |pagename = "Default", x = 0, y = 0, width = 1024, height = 724|
@@ -264,7 +268,7 @@ LemurClient {
 
 			this.sendPacket("<JZML>" ++ snippets ++ "<JZML>");
 
-			r { 0.1.wait; connections[current_ip][1].sendMsg("/interface", pageName); bindGui.randomize;}.play;
+			r { 0.1.wait; connections[remoteClientIP][1].sendMsg("/interface", pageName); bindGui.randomize;}.play;
 		}, { "input typeArray and oscTagArray don't have the same sizes".postln; });
 	}
 
@@ -294,7 +298,7 @@ LemurClient {
 
 			this.sendPacket("<JZML>" ++ snippets ++ "<JZML>");
 
-			r { 0.1.wait; connections[current_ip][1].sendMsg("/interface", pageName); nil }.play;
+			r { 0.1.wait; connections[remoteClientIP][1].sendMsg("/interface", pageName); nil }.play;
 		}, { "input typeArray and oscTagArray don't have the same sizes".postln; });
 	}
 }
