@@ -10,7 +10,8 @@
  */
 
 LemurConnection {
-	var <>remoteIP, <oscNetAddr, <uiEditorNetAddr, <>editorPort, <>oscPort;
+	classvar <>defaultEditorPort=8002, <>defaultOscPort=8000, <>defaultRemoteIP;
+    var <>remoteIP, <oscNetAddr, <uiEditorNetAddr, <>editorPort, <>oscPort;
 
 	*new { | remoteIP |
 		if (remoteIP.isNil) {
@@ -20,8 +21,8 @@ LemurConnection {
 	}
 
 	init {
-		editorPort = LemurClientConfig.editorPort;
-		oscPort = LemurClientConfig.oscPort;
+		editorPort = defaultEditorPort;
+		oscPort = defaultOscPort;
 		uiEditorNetAddr = NetAddr(remoteIP, editorPort);
 		oscNetAddr = NetAddr(remoteIP, oscPort);
 	}

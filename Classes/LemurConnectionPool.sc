@@ -6,7 +6,7 @@
  *         - Re-use or setup a new LemurConnection.
  *
  *
- * AUTHOR: Marinus Klaassen (2012, 2021Q2)
+ * AUTHOR: Marinus Klaassen (2021Q2)
  *
  */
 
@@ -22,8 +22,8 @@ LemurConnectionPool {
 		var lemurConnection;
 
 	    if (remoteIP.isNil, {
-	        remoteIP = LemurClientConfig.defaultLemurClientRemoteIP;
-			postln(format("Remote IP is taken from the default remote IP '%'", remoteIP));
+	        remoteIP = LemurConnection.defaultRemoteIP;
+			postln(format("Remote IP is taken from LemurConnection.defaultRemoteIP '%'", remoteIP));
 		});
 
 		if (remoteIP.isNil, {
@@ -34,8 +34,8 @@ LemurConnectionPool {
 		// Multiple LemurClient instances can use the same client endpoint. Create a new connection if needed.
 		if (connections[remoteIP] == nil, {
 			lemurConnection = LemurConnection(remoteIP);
-			lemurConnection.connect();
 		    postln(format("Connecting LemurClient remote IP '%', buildPort=%, oscPort=%.", lemurConnection.remoteIP, lemurConnection.editorPort, lemurConnection.oscPort));
+			lemurConnection.connect();
 			postln("New connection succeeded.");
 			connections[remoteIP] = lemurConnection;
 		}, {
