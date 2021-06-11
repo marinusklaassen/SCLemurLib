@@ -1,0 +1,66 @@
+TITLE:: LemurConnection
+summary::  The LemurConnection class provides a communication access for the LemurClient to communicate via the nescessary 2 socket connections the Lemur app listens to.
+categories:: Lemur
+related:: Classes/LemurClient, Classes/LemurConnectionPool
+
+DESCRIPTION::
+The LemurConnection class provides a communication access for the LemurClient to communicate via the nescessary 2 socket connections the Lemur app listens to.
+
+There are 2 messages possible: Editor messages (XML via TCP) and OSC messages (via UDP).
+
+LemurConnection instances are instantiated and managed by the LemurConnectionPool and is used by the LemurClient instance. The LemurClient instances sends, with the help of the LemurConnection, messages to the remote Lemur app.
+
+So far I know the Lemur server ports are fixed. However when this is not the case your can override the default classvars in the startup.csd file (examples section).
+
+CLASSMETHODS::
+
+METHOD:: new
+Make a new LemurConnection.
+
+returns:: A new instance.
+
+ARGUMENT:: remoteIP
+The IP address of the device that runs Lemur. This will override the default.
+
+METHOD:: defaultOscPort
+Gets or sets the default port where Lemur listens to OSC messages.
+
+METHOD:: defaultEditorPort
+Gets or sets the default port where Lemur listens to TCP editor XML messages.
+
+METHOD:: defaultRemoteIP
+Gets or sets the IP address of the device that runs Lemur you can set as the default.
+
+
+INSTANCEMETHODS::
+
+private::init
+
+METHOD:: connect
+
+METHOD:: disconnect
+
+METHOD:: editorPort
+Gets or sets the editor port.
+
+METHOD:: oscPort
+Gets or sets the OSC port.
+
+METHOD:: remoteIP
+Gets or sets the connection IP address.
+
+METHOD:: uiEditorNetAddr
+Gets the editor NetAddr instance.
+
+METHOD:: oscNetAddr
+Gets the OSC NetAddr instance.
+
+
+EXAMPLES::
+
+code::
+// Override the defaultRemoteIP in the startup.csd
+LemurConnection.defaultRemoteIP = "192.168.2.11";
+// In your code you don't need to provide a remote IP when the default is overridden.
+LemurClient().connect
+::

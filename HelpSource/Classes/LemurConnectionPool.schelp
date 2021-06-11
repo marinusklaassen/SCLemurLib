@@ -1,0 +1,28 @@
+TITLE:: LemurConnectionPool
+summary:: Creates or reuses LemurConnection instances for remote IP addresses.
+categories:: Lemur
+related:: Classes/LemurClient, Classes/LemurConnection
+
+DESCRIPTION::
+Creates or reuses LemurConnection instances for remote IP addresses.
+
+CLASSMETHODS::
+
+private:: initClass
+
+METHOD:: connect
+Creates or gets a LemurConnection.
+
+ARGUMENT:: remoteIP
+The IP address of the target device that runs Lemur.
+
+returns:: A LemurConnection
+
+METHOD:: disconnect
+
+ARGUMENT:: lemurConnection
+A LemurConnection instance.
+
+METHOD:: connections
+gets the current connections as a Dictionary.
+
