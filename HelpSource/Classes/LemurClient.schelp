@@ -1,0 +1,340 @@
+TITLE:: LemurClient
+summary:: The LemurClient provides serveral methods you can use the build user interfaces on the Lemur iOS app without the need of the Lemur Editor.
+
+categories:: Lemur
+
+DESCRIPTION::
+The LemurClient provides serveral methods you can use the build user interfaces on the Lemur iOS app without the need of the Lemur Editor.
+
+Note: The ID's should be provided as alfanumeric. Like: slider1 ,slider2, range2 etc..
+
+image::sliders.png::
+
+CLASSMETHODS::
+
+METHOD:: new
+Make a new LemurClient.
+
+returns:: A new instance.
+
+METHOD:: postXMLRequestsToConsole
+A boolean to enable and disable tracing to the console of the XML editor messages that are sent to Lemur.
+
+INSTANCEMETHODS::
+
+private:: sendRequest,lemurConnection
+
+METHOD:: connect
+Creates or gets a LemurConnection for a remoteIP.
+
+ARGUMENT:: remoteIP
+The IP address of the device that runs Lemur.
+
+
+METHOD:: disconnect
+
+
+METHOD:: reset
+Resets and removes all pages and widgets Lemur.
+
+
+METHOD:: setOscTarget
+Sets the OSC target where Lemur can send OSC message to.
+
+ARGUMENT:: targetId
+OSC target slot (int) (see properties in the app).
+
+ARGUMENT:: targetIP
+The IP of the device where SuperCollider is running on.
+
+ARGUMENT:: targetPort
+For example the SCLang port.
+
+
+METHOD:: page
+Add a page. The Lemur Editor calls this an interface, I am going to rename this in the future or provide an overload.
+
+ARGUMENT:: pagename
+(optional)
+
+ARGUMENT:: x
+(optional)
+
+ARGUMENT:: y
+(optional)
+
+ARGUMENT:: width
+(optional)
+
+ARGUMENT:: height
+(optional)
+
+
+METHOD:: renamePage
+
+ARGUMENT:: newname
+
+ARGUMENT:: oldname
+
+
+METHOD:: removePage
+Remove a page containing widgets.
+
+ARGUMENT:: pagename
+(optional)
+
+
+METHOD:: fader
+Create or update a fader.
+
+ARGUMENT:: pagename
+(optional)
+
+ARGUMENT:: id
+
+ARGUMENT:: x
+(optional)
+
+ARGUMENT:: y
+(optional)
+
+ARGUMENT:: width
+(optional)
+
+ARGUMENT:: height
+(optional)
+
+ARGUMENT:: color
+A Color instance (optional)
+
+
+METHOD:: removeFader
+
+ARGUMENT:: pagename
+(optional)
+
+ARGUMENT:: id
+
+
+METHOD:: switches
+Add or update a matrix of switches.
+
+ARGUMENT:: pagename
+(optional)
+
+ARGUMENT:: id
+(optional)
+
+ARGUMENT:: x
+(optional)
+
+ARGUMENT:: y
+(optional)
+
+ARGUMENT:: width
+(optional)
+
+ARGUMENT:: height
+(optional)
+
+ARGUMENT:: columnSize
+(optional)
+
+ARGUMENT:: rowSize
+(optional)
+
+
+METHOD:: removeSwitches
+Remove a matrix of switches
+
+ARGUMENT:: pagename
+(optional)
+
+ARGUMENT:: id
+(optional)
+
+
+METHOD:: pads
+Add or update a matrix of pads.
+
+ARGUMENT:: pagename
+(optional)
+
+ARGUMENT:: id
+(optional)
+
+ARGUMENT:: x
+(optional)
+
+ARGUMENT:: y
+(optional)
+
+ARGUMENT:: width
+(optional)
+
+ARGUMENT:: height
+(optional)
+
+ARGUMENT:: columnSize
+(optional)
+
+ARGUMENT:: rowSize
+(optional)
+
+
+METHOD:: removePads
+(describe method here)
+
+ARGUMENT:: pagename
+(optional)
+
+ARGUMENT:: id
+(optional)
+
+
+
+METHOD:: range
+Add or update a range slider
+
+ARGUMENT:: pagename
+(optional)
+
+ARGUMENT:: id
+(optional)
+
+ARGUMENT:: x
+(optional)
+
+ARGUMENT:: y
+(optional)
+
+ARGUMENT:: width
+(optional)
+
+ARGUMENT:: height
+(optional)
+
+ARGUMENT:: color
+(optional)
+
+
+METHOD:: removeRange
+Remove a range slider.
+
+ARGUMENT:: pagename
+(optional)
+
+ARGUMENT:: id
+(optional)
+
+
+METHOD:: text
+Add or update a text widget.
+
+ARGUMENT:: pagename
+(optional)
+
+ARGUMENT:: id
+(optional)
+
+ARGUMENT:: content
+(optional)
+
+ARGUMENT:: x
+(optional)
+
+ARGUMENT:: y
+(optional)
+
+ARGUMENT:: width
+(optional)
+
+ARGUMENT:: height
+(optional)
+
+ARGUMENT:: color
+(optional)
+
+
+METHOD:: removeText
+Removes a text widget.
+
+ARGUMENT:: pagename
+(optional)
+
+ARGUMENT:: id
+(optional)
+
+
+EXAMPLES::
+
+code::
+// First setup a connection!
+
+// Set a default remove IP in the Startup.scd file.
+LemurConnection.defaultRemoteIP = "192.168.2.1";
+// Set a connection using the default IP.
+l = LemurClient().connect;
+l.reset;
+
+// Set a connection by passing the remoteIP argument.
+l = LemurClient().connect("192.168.2.1");
+l.reset;
+
+// First enable tracing for incoming OSC messages.
+OSCFunc.trace(true);
+// Set the OSC target using slot [OSC 0].
+l.setOscTarget(0,"192.168.2.2", NetAddr.langPort);
+
+// Add several faders with different horizontal positions.
+(
+l.fader("Faders", "fader1");
+l.fader("Faders", "fader2", 100);
+l.fader("Faders", "fader3", 200);
+l.fader("Faders", "fader4", 300);
+l.fader("Faders", "fader5", 400);
+)
+
+// Faders with custom sizes
+(
+l.fader("Faders with custom sizes", "Fader1", 100, 100, 100, 500);
+l.fader("Faders with custom sizes", "Fader2", 600, 200, 300, 500);
+)
+
+// Move a fader
+l.fader("Update a fader", "Fader1", 100, 100, 500, 500);
+l.fader("Update a fader", "Fader1", 600, 200, 100, 724);
+// Automate to move
+p = 0; t = Task({ loop { l.fader("Update a fader", "Fader1", p); p=p+50%924; 0.2.wait; }}).play;
+t.stop;
+
+// Add 30 faders to Lemur on a new page.
+l.page("Bunch of faders");
+30 do: {|i|l.fader("Bunch of faders", \sine++i, i%15*65+25, asInt(i/15%2, 1) * 350, 65, 350, Color.rand)};
+30 do: {|i|l.lemurConnection.oscNetAddr.sendMsg('/sine'++i++'/x',1.0.linrand)};
+30 do: {|i| l.removeFader("Bunch of faders", \sine++i)};
+
+// Add a new page to show off some more automation.
+l.page("Sine");
+// Add a bunch of range sliders.
+40 do: { |i| l.range("Sine", i, (i % 20) * 50, 362 * floor(i / 20), 50, 362); };
+// Random slider values.
+40 do: {|i|  l.lemurConnection.oscNetAddr.sendMsg('/_'++i++'/x', 1.0.rand)};
+// Draw a phase shifting sine
+p = 0; t = Task({ loop { p = p + 0.1; ((0..40) collect: { |i| l.lemurConnection.oscNetAddr.sendMsg('/_'++i++'/x', sin(i / 40 * 8 * pi + (p)) * 0.5 + 0.5) }); 0.05.wait; } }).play;
+t.stop;
+
+// Some drunk textboxes
+(
+b = Array.fill(10, { |i|
+	var name = "HAPPYCAMPER".scramble.asString, x = Pbrown(0, 1023, 30).asStream, y = Pbrown(0, 768, 30).asStream;
+	[name, Task({ loop {
+		l.text("Thing", \text++i, x: x.next, y: y.next, width: 100, height: 100, content: "boulehausenstock".scramble, width: 100);
+		0.2.wait;
+	}}).play;
+	]
+});
+)
+// Stop the task and cleanup.
+b do: { | o | o[1].stop; l.removeText("Thing", o[0]);  };
+::
