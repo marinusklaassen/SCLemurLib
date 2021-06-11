@@ -2,22 +2,17 @@
  * FILENAME: LemurClient
  *
  * DESCRIPTION:
- *         Lemur client logic for interfaces with the Lemur iOS app.
+ *         Lemur client logic for building user interfaces with the Lemur iOS app without the need of a Lemur Editor.
  *         - Editing/build an interfaces.
  *         - Respond to OSC messages
- *         - Set color by using the sclang Color object.
  *
  * AUTHOR: Marinus Klaassen (2012, 2021Q2)
  *
  */
 
 LemurClient {
-	classvar <buildInfo, <>postXMLRequestsToConsole=false;
+	classvar <>postXMLRequestsToConsole=false;
 	var <lemurConnection;
-
-	*initClass {
-		buildInfo = IdentityDictionary(); // Waarschijnlijk niet nodig ivm demo code. Demo code gaat naar een andere class
-	}
 
 	*new { ^super.new; }
 

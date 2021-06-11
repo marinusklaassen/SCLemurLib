@@ -11,7 +11,7 @@
  */
 
 LemurConnectionPool {
-	classvar <>connections;
+	classvar <connections;
 
     *initClass {
 		connections = IdentityDictionary();
