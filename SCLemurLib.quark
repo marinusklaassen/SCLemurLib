@@ -1,0 +1,11 @@
+(
+  name: "SCLemurLib",
+  summary: "Classes for building UI's on the Lemur app without the need of their Lemur Editor.",
+  version: "0.1.0",
+  schelp: "HelpSource",
+  license: "GNU GPL v3.0",
+  author: "Marinus klaassen",
+  copyright: "Marinus Klaassen",
+  dependencies: ["XML"],
+  url: "https://github.com/marinusklaassen/SCLemurLib"
+)
