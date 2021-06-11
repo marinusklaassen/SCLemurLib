@@ -72,9 +72,9 @@ t.stop;
 
 ## Futher development 
 
-Almost 7 years ago I kind of quit music and technology. However this year (2021) I have got more time to fiddle around with this kind of small hobby projects. 
+Almost 7 years ago I kind of quit music and technology. However this year (2021) I have got more time to fiddle around with small hobby projects. 
 
-This library was initial part of my caAC-MLib. A while ago I moved the Lemur specific code to this repository. I have reformatted quite some code. Instead of working with string formatting I started use the XML lib to programmatically constructor the DOM models which are formatted into XML before sending to Lemur. All of this is based on defaults stored in a MultiLevelIdentityDictionary. The defaults you can override in the startup.csd file for now in the intermediate LemurClientRequestBodyBuilder. Note that when the Remote UI Toolkit the current defaults functionaliteit will be handled different. 
+This library was initial part of my caAC-MLib. A while ago I moved the Lemur specific code to this repository. I have reformatted the code. Instead of working with string formatting I started to use the XML lib to programmatically construct the DOM models, which are formatted into XML strings before sending to Lemur. All of this is based on extract the attributes defaults stored in a MultiLevelIdentityDictionary in a certain way. The defaults you can override in the startup.csd file for now. This can be done via the intermediate LemurClientRequestBodyBuilder class. Note that when the Remote UI Toolkit is build the current defaults functionality and logic will be handled a bit more different. 
 
 ### Flexibility
 
@@ -86,18 +86,17 @@ The biggest upcoming change is the reformatting the builder methods into a set o
 
 A sort example of the programming interface I have in mind: 
 
-LemurClient (which will target 1 remote device and 1 running Lemur instance)
-  LPage
-  * LSlider
-  * LText 
-  * LSlider
-  * LText
-  * LPads 
-
-  LPage 
-  * LSlider
-  * LSlider
-  * LSlider
+LemurClient (which will target 1 remote device and 1 running Lemur instance) and 2 pages. The object graph will proberly look like this:
+  * LPage
+    * LSlider
+    * LText 
+    * LSlider
+    * LText
+    * LPads 
+  * LPage 
+    * LSlider
+    * LSlider
+    * LSlider
 
 More planned features that will be more easy to achieve: 
   * Via widget instances properties you can update on the fly the widgets Lemur.
