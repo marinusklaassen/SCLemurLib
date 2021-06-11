@@ -324,6 +324,12 @@ l.page("Sine");
 p = 0; t = Task({ loop { p = p + 0.1; ((0..40) collect: { |i| l.lemurConnection.oscNetAddr.sendMsg('/_'++i++'/x', sin(i / 40 * 8 * pi + (p)) * 0.5 + 0.5) }); 0.05.wait; } }).play;
 t.stop;
 
+/// Pads and switches
+(
+l.switches("Pads and switches", "switches1", 0, 0, 512, 724, 10, 14);
+l.pads("Pads and switches", "pads1", 512, 0, 512, 724, 10, 14);
+)
+
 // Some drunk textboxes
 (
 b = Array.fill(10, { |i|
