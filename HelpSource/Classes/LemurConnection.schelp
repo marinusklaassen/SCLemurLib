@@ -1,5 +1,5 @@
 TITLE:: LemurConnection
-summary::  The LemurConnection class provides a communication access for the LemurClient to communicate via the nescessary 2 socket connections the Lemur app listens to.
+summary:: The LemurConnection class provides a communication access for the LemurClient to communicate via the nescessary 2 socket connections the Lemur app listens to.
 categories:: Lemur
 related:: Classes/LemurClient, Classes/LemurConnectionPool
 
@@ -12,15 +12,13 @@ LemurConnection instances are instantiated and managed by the LemurConnectionPoo
 
 So far I know the Lemur server ports are fixed. However when this is not the case your can override the default classvars in the startup.csd file (examples section).
 
+
 CLASSMETHODS::
 
 METHOD:: new
 Make a new LemurConnection.
 
 returns:: A new instance.
-
-ARGUMENT:: remoteIP
-The IP address of the device that runs Lemur. This will override the default.
 
 METHOD:: defaultOscPort
 Gets or sets the default port where Lemur listens to OSC messages.
@@ -30,7 +28,6 @@ Gets or sets the default port where Lemur listens to TCP editor XML messages.
 
 METHOD:: defaultRemoteIP
 Gets or sets the IP address of the device that runs Lemur you can set as the default.
-
 
 INSTANCEMETHODS::
 
