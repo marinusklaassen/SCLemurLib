@@ -8,7 +8,16 @@ The main entry point for you is the LemurClient class. By using this class you c
 
 This library depends on: https://github.com/supercollider-quarks/XML
 
+## Installation 
+
+Clone this repository into your SC Extension directory.
+
+OR:
+
+Install this library as a quark.
 ```
+Quarks.install("SCLemurLib");
+// In the next release I will try to prevent this extra step:
 Quarks.install("XML");
 ```
 
@@ -70,7 +79,7 @@ t.stop;
 
 ![](./Images/sliders_sine.png)
 
-## Futher development 
+## Upcoming features
 
 Almost 7 years ago I kind of quit music and technology. However this year (2021) I have got more time to fiddle around with small hobby projects. 
 
