@@ -28,15 +28,27 @@ LemurClient {
 		});
 	}
 
-	sendRequest { | message |
-	    if (lemurConnection.notNil, {
-			message.indent = 0;
-			message.preserveWhitespace = false;
-			message = message.format();
+	sendRequest { | domMessage |
+	    var pagename, xmlMessage, class;
+		if (lemurConnection.notNil, {
+			domMessage.indent = 0;
+			domMessage.preserveWhitespace = false;
+			xmlMessage = domMessage.format();
 			if (postXMLRequestsToConsole, {
-			  postln(format("Send XML Request to Lemur -> %", message)); });
-			message = message.ascii.add(0).as(Int8Array);
-			lemurConnection.uiEditorNetAddr.sendMsg("/jzml", message);
+			  postln(format("Send XML Request to Lemur -> %", xmlMessage)); });
+			xmlMessage = xmlMessage.ascii.add(0).as(Int8Array);
+			lemurConnection.uiEditorNetAddr.sendMsg("/jzml", xmlMessage);
+			// Switch to the page if a widget crud action happened. Quick fix.
+			pagename = domMessage.getFirstChild().getAttribute("text");
+			if (pagename.isNil, { // another quick fix getAttribute is buggy.
+				pagename = domMessage.getFirstChild().getAttribute(\text);
+			});
+			if (pagename.notNil, {
+				fork { // Another quick fix. Unfortunatly a select can't be do via TCP. selectPage sends an OSC message via another UDP socket..
+					0.2.wait;
+					this.selectPage(pagename);
+				}
+			});
 		    },{
 		    postln("Cannot send an UI editing message because there's no connection made.");
 		});
@@ -107,5 +119,11 @@ LemurClient {
 	setOscTarget { | targetId, targetIP, targetPort |
 		var nodeAttributeOverrides = Dictionary.newFrom([\target, targetId, \ip, targetIP, \port, targetPort]);
 		this.sendRequest(LemurClientRequestBodyComposer.getOscTargetRequest(nodeAttributeOverrides));
+	}
+
+	selectPage { | pagename |
+		if (lemurConnection.notNil, {
+			lemurConnection.oscNetAddr.sendMsg("/interface", pagename);
+		});
 	}
 }
