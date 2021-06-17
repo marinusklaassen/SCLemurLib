@@ -38,7 +38,7 @@ LemurClientRequestBodyComposer {
 		defaults[\SYNCHRO, \mode] = 0;
 
 		defaults[\PAGE, \class] = "JAZZINTERFACE";
-		defaults[\PAGE, \text] = "";
+		defaults[\PAGE, \text] = "Default";
 		defaults[\PAGE, \x] = 0;
 		defaults[\PAGE, \y] = 0;
 		defaults[\PAGE, \width] = 1024;

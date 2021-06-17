@@ -51,6 +51,12 @@ ARGUMENT:: targetPort
 For example the SCLang port.
 
 
+METHOD:: selectPage
+Select a page by pagename.
+
+ARGUMENT:: pagename
+
+
 METHOD:: page
 Add a page. The Lemur Editor calls this an interface, I am going to rename this in the future or provide an overload.
 
@@ -266,6 +272,8 @@ ARGUMENT:: id
 (optional)
 
 
+
+
 EXAMPLES::
 
 code::
@@ -343,4 +351,13 @@ b = Array.fill(10, { |i|
 )
 // Stop the task and cleanup.
 b do: { | o | o[1].stop; l.removeText("Thing", o[0]);  };
+
+// Select a page
+l.page("Hi");
+l.page("Hoi");
+l.page("Hallo");
+l.selectPage("Hi");
+l.selectPage("Hoi");
+l.selectPage("Hallo");
+
 ::
